@@ -6,11 +6,22 @@ const table = document.getElementById('main-table');
 const form = document.getElementById('main-form');
 const container = document.getElementById('main-container');
 const pokemons = [];
+var edit = false;
+var actualRow;
+
+
+function openModal() {
+    let modal = document.getElementById('exampleModal');
+    let myModal = new bootstrap.Modal(modal);
+    document.getElementById('exampleModalLabel').textContent = 'Adicionar Pokémon';
+    cleanInputs();
+    myModal.show();
+}
 
 function showAlert(message, className) {
     let option = [{
-        animation : true,
-        delay : 2000
+        animation: true,
+        delay: 2000
     }]
     let toastElement = document.getElementById('myToast');
     toastElement.className = `toast bg-${className}`;
@@ -42,6 +53,9 @@ function validateType() {
 function validatePokemon() {
     for (i = 0; i < pokemons.length; i++) {
         if (inputName.value === pokemons[i]) {
+            if (edit === true) {
+                return true
+            }
             return false;
         }
     }
@@ -53,21 +67,34 @@ form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (validateType()) {
         if (validatePokemon()) {
-            postPokemon();
-            const row = document.createElement('tr');
-            row.innerHTML = `
-            <td class="col-3"><img src="${inputImage.value}" width="70px"</td>
-            <td class="col-3">${inputName.value}</td>
-            <td class="col-3"><span id="type-badge" class="badge badge-dark ${inputType.value.toLowerCase()}">${inputType.value}</span></td>
-            <td class="col-3">
-                <a href="#" id="delete-button">
-                    <i class="fa-sharp fa-solid fa-trash delete" title="lixo"></i>
-                </a>
-            </td>
-            `
-            body.appendChild(row);
-            cleanInputs();
-            showAlert('Pokemon Adicionado', 'success');
+            if (actualRow == null) {
+                postPokemon();
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td class="col-3"><img src="${inputImage.value}" width="70px"</td>
+                <td class="col-3">${inputName.value}</td>
+                <td class="col-3"><span id="type-badge" class="badge badge-dark ${inputType.value.toLowerCase()}">${inputType.value}</span></td>
+                <td class="col-3">
+                    <a>
+                        <i href="#" id="edit-button" class="fa-sharp fa-solid fa-edit edit" style="color:yellow;" title="editar"></i>
+                        <i href="#" id="delete-button" class="fa-sharp fa-solid fa-trash delete" style="color:red;" title="apagar"></i>
+                    </a>
+                </td>
+                `
+                body.appendChild(row);
+                cleanInputs();
+                showAlert('Pokemon Adicionado', 'success');
+            }
+            else {
+                actualRow.parentElement.children[0].children[0].src = inputImage.value;
+                actualRow.parentElement.children[1].textContent = inputName.value;
+                actualRow.parentElement.children[2].children[0].className = `badge badge-dark ${inputType.value.toLowerCase()}`;
+                actualRow.parentElement.children[2].children[0].innerHTML = inputType.value;
+                actualRow = null;
+                showAlert("Pokemon Editado com Sucesso", "success");
+                edit = false;
+            }
+            
         }
         else {
             cleanInputs();
@@ -81,12 +108,12 @@ form.addEventListener('submit', (e) => {
 
 body.addEventListener('click', (e) => {
     target = e.target;
-    const actualRow = target.parentElement.parentElement;
-    let isValid = confirm('Deseja deletar o Pokemon?');
-    if (!isValid) {
-        return;
-    }
+    actualRow = target.parentElement.parentElement;
     if (target.classList.contains('delete')) {
+        let isValid = confirm('Deseja deletar o Pokemon?');
+        if (!isValid) {
+            return;
+        }
         actualRow.parentElement.remove();
         showAlert('Pokemon removido com sucesso', 'danger');
         pokemons.splice(0, 1);
@@ -97,6 +124,23 @@ body.addEventListener('click', (e) => {
             }
         }
     }
+    if (target.classList.contains('edit')) {
+        //showAlert('Vai editar o pokemon', 'warning');
+
+        let name = document.getElementById('inputName');
+        let image = document.getElementById('inputImage');
+        let type = document.getElementById('inputType');
+        edit = true;
+        openModal();
+        exampleModalLabel.textContent = 'Editar Pokémon';
+        name.value = actualRow.parentElement.children[1].textContent;
+        type.value = actualRow.parentElement.children[2].textContent;
+        image.value = actualRow.parentElement.children[0].children[0].src;
+
+
+
+    }
+
 });
 
 function postPokemon() {

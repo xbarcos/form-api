@@ -10,6 +10,14 @@ body {
     background-color: black;
 }
 
+#nav button i{
+	margin-right: 0.4rem;
+	font-size: 1.4rem;
+	vertical-align: middle;
+	position: relative;
+	top: -1px;
+}
+
 table td {
     vertical-align: middle;
     font-size: x-large;
@@ -24,10 +32,23 @@ table td {
 	font-size: medium;
 	position: relative;
 	top: -2px;
+	margin-left: -25px;
+}
+
+#openModalButton {
+	text-align: end;
 }
 
 #delete-button {
 	cursor: pointer;
+}
+
+#edit-button {
+	cursor: pointer;
+}
+
+#main-table th{
+	margin: 50px;
 }
 
 .steel {

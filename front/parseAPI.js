@@ -29,8 +29,9 @@ function readPoke(result) {
             <td class="col-3">${element.nome}</td>
             <td class="col-3"><span id="type-badge" class="badge badge-dark ${element.tipo.toLowerCase()}">${element.tipo}</span></td>
             <td class="col-3">
-                <a href="#" id="delete-button">
-                    <i class="fa-sharp fa-solid fa-trash delete" title="lixo"></i>
+                <a>
+                    <i href="#" id="edit-button" class="fa-sharp fa-solid fa-edit edit" style="color:yellow;" title="editar"></i>
+                    <i href="#" id="delete-button" class="fa-sharp fa-solid fa-trash delete" style="color:red;" title="apagar"></i>
                 </a>
             </td>
             `
